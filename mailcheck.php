@@ -8,7 +8,7 @@
  * -DNS based email validation
  *
  * @author Matthew Sigley, based on Mailcheck.js by Derrick Ko
- * @version 1.0
+ * @version 1.1
  * @license GNU GPL version 3 (or later)
  **/
 
@@ -32,10 +32,12 @@
 		),
 		'second_level_domains' => array( 'yahoo', 'hotmail', 'mail', 'live', 'outlook', 'gmx' ),
 		'top_level_domains' => array( 
-			'com', 'com.au', 'com.tw', 'ca', 'co.nz', 'co.uk', 'de',
-			'fr', 'it', 'ru', 'net', 'org', 'edu', 'gov', 'jp', 'nl', 'kr', 'se', 'eu', 
+			'com', 'org', 'net', 'edu', 'gov', 'mil', //Orignal TLDs
+			'biz', 'info', 'me', // Most popular TLDs added in 2000
+			'co', 'me', 'com.au', 'com.tw', 'ca', 'co.nz', 'co.uk', 'de', // Most ccTLDs
+			'fr', 'it', 'ru', 'jp', 'nl', 'kr', 'se', 'eu', 
 			'ie', 'co.il', 'us', 'at', 'be', 'dk', 'hk', 'es', 'gr', 'ch', 'no', 'cz', 
-			'in', 'net', 'net.au', 'info', 'biz', 'mil', 'co.jp', 'sg', 'hu', 'uk' 
+			'in', 'net.au', 'info', 'co.jp', 'sg', 'hu', 'uk' 
 		)
 	);
 
@@ -78,7 +80,7 @@
 				return false;
 			return $email;
 		}
-
+		
 		$domain = $email_parts->domain;
 		$sld = $email_parts->sld;
 		$tld = $email_parts->tld;
@@ -88,7 +90,6 @@
 		if( empty( $tld ) ) {
 			if( $closest_domain = $this->find_closest_domain( $domain, false ) )
 				return $email_parts->mailbox . '@' . $closest_domain;
-			var_dump( $closest_domain );
 			return false;
 		}
 
@@ -119,7 +120,12 @@
 				$sld = $closest_sld;
 			if( !empty( $closest_tld ) )
 				$tld = $closest_tld;
-			return $email_parts->mailbox . '@' . $sld . '.' . $tld;
+
+			// Return the email if its different than the original
+			$email = $email_parts->mailbox . '@' . $sld . '.' . $tld;
+			if( $email == $original_email )
+				return false;
+			return $email;
 		}
 		
 		return false;
