@@ -9,6 +9,7 @@ $typo_tests = array(
 	'test@gmail.com#',
 	' test@yahoo.com ',
 	'test@<gmail>.com',
+	'test@@aol.com',
 	//Suggestion tests
 	'test@gmail',
 	'test@yahoo',
@@ -43,10 +44,13 @@ $typo_tests = array(
 	'test@hotmail.fr',
 	'test@9.fr',
 	'test@nordnet.fr',
+	'test@example1.com',
+	'test@gmail.tv',
 	// Validation tests
 	'test@gmail.com',
 	'test@yahoo.com',
 	'test@aol.com',
+	'test@electricquilt.com',
 	'test@thereisnowaythisdomainexists.com'
 );
 ?>
