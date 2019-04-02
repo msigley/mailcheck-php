@@ -8,7 +8,7 @@
  * -DNS based email validation
  *
  * @author Matthew Sigley, based on Mailcheck.js by Derrick Ko
- * @version 1.1
+ * @version 1.2
  * @license GNU GPL version 3 (or later)
  **/
 
@@ -28,7 +28,12 @@
 			'sympatico.ca', 'googlemail.com', 'att.net', 'xtra.co.nz', 'web.de', 'cox.net', 
 			'gmail.com', 'ymail.com', 'aim.com', 'rogers.com', 'verizon.net', 'rocketmail.com', 
 			'google.com', 'optonline.net', 'sbcglobal.net', 'aol.com', 'me.com', 'btinternet.com',
-			'charter.net', 'shaw.ca', 'apple.com', 'google.com', 'hotmail.com', 'yahoo.com'
+			'charter.net', 'shaw.ca', 'apple.com', 'google.com', 'hotmail.com', 'yahoo.com',
+			// Top 20 Mail.com domains https://www.mail.com/email/#.7518-header-subnav1-4
+			'mail.com', 'email.com', 'usa.com', 'myself.com', 'consultant.com', 'post.com',
+			'europe.com', 'asia.com', 'iname.com', 'writeme.com', 'dr.com', 'cheerful.com', 
+			'accountant.com', 'techie.com', 'engineer.com', 'linuxmail.org', 'musician.org',
+			'contractor.net', 'financier.com', 'workmail.com'
 		),
 		'second_level_domains' => array( 'yahoo', 'hotmail', 'mail', 'live', 'outlook', 'gmx' ),
 		'top_level_domains' => array( 
@@ -189,7 +194,10 @@
 		if (!$dns_failed) {
 			if( empty($dns_record) )
 				return false;
-			$dns_record_types = array_column($dns_record, 'type');
+			if( function_exists( 'array_column' ) )
+				$dns_record_types = array_column($dns_record, 'type');
+			else
+				$dns_record_types = array_map( function($element) { return $element['type']; }, $dns_record );
 			// Below could be multiple ands but its easier to read with if's
 			if( !in_array('MX', $dns_record_types) ) { 
 				if( in_array('A', $dns_record_types) || in_array('AAAA', $dns_record_types) )
