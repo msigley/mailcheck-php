@@ -8,7 +8,7 @@
  * -DNS based email validation
  *
  * @author Matthew Sigley, based on Mailcheck.js by Derrick Ko
- * @version 1.3
+ * @version 1.4
  * @license GNU GPL version 3 (or later)
  **/
 
@@ -19,6 +19,8 @@
 	private $settings;
 
 	private $dns_cache = array();
+
+	private $role_names;
 
 	private $defaults = array(
 		'domain_threshold' => 2,
@@ -391,6 +393,31 @@
 		}
 
 		return $transpositions;
+	}
+
+	public function is_role_based_email( $email ) {
+		if( is_null( $this->role_names ) ) {
+			$this->role_names = array();
+			$fp = fopen( 'role_names.txt', 'r', true );
+			while( ( $line = fgets( $fp ) ) !== false ) {
+				$role = trim( $line);
+				if( preg_match( '/^[0-9]+$/', $role ) )
+					continue;
+				if( strlen( $role ) < 4 )
+					continue;
+				$this->role_names[ $role ] = true;
+			}
+			fclose( $fp );
+		}
+
+		list( $mailbox, $domain ) = explode( '@', $email, 2);
+
+		if( preg_match( '/^[0-9]+$/', $mailbox ) )
+			return true;
+		if( strlen( $mailbox ) < 4 )
+			return true;
+		
+		return isset( $this->role_names[ $mailbox ] );
 	}
 
 	private function throwException($severity, $message, $file, $line) {
